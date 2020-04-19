@@ -1,0 +1,48 @@
+// answer code for online coding problem https://programmers.co.kr/learn/courses/30/lessons/60057
+// solved on 19th Apr. 2020
+
+function solution(s) {    
+    const maxLenSplit = Math.floor(s.length / 2);
+    let lenSplit;
+    let shortestLen = s.length;
+    for (lenSplit = 1; lenSplit <= maxLenSplit; lenSplit++) {
+        const calcLen = getCompressedLen(s, lenSplit);
+        shortestLen = (calcLen < shortestLen) ? calcLen : shortestLen;
+    }
+    return shortestLen;
+}
+
+function getCompressedLen(s, lenSplit) {
+    let compressed = '';
+    let cursor = 0;
+    while (cursor < s.length) {
+        const lenLeft = s.length - cursor;
+        if (lenLeft < lenSplit) {
+            compressed += s.substr(cursor, lenLeft);
+            break;
+        }
+            
+        const finder = s.substr(cursor, lenSplit);
+        const chunks = Math.floor(lenLeft / lenSplit);
+        
+        if (chunks < 2) {
+            compressed += s.substr(cursor, lenLeft);
+            break;
+        }
+        
+        let rep = 0;
+        for (let chunk = 1; chunk < chunks; chunk++) {
+            const sSub = s.substr(cursor + (chunk * lenSplit), lenSplit);
+            if (sSub == finder) {
+                ++rep;
+            } else {
+                break;
+            }
+        }
+        
+        compressed += (rep > 0) ? (rep + 1) + finder : s.substr(cursor, lenSplit);
+        cursor += ((rep + 1) * lenSplit);        
+    }
+    
+    return compressed.length;
+}
